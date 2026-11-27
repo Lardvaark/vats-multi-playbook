@@ -1,0 +1,434 @@
+<title>NVDA Nov 27 Playbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #eef1f5; --panel: #ffffff; --panel-2: #f6f8fb; --fg: #16202c; --muted: #5a6778;
+  --line: #d6dde6; --line-strong: #9aa7b6; --short: #c7362f; --long: #16834d; --gamma: #6c46d6;
+  --pivot: #b26d0c; --info: #2470b8; --pill-ink: #ffffff;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141d; --panel: #141d29; --panel-2: #18232f; --fg: #e1e7ee; --muted: #8b99aa;
+    --line: #253243; --line-strong: #4b5b6e; --short: #f2645c; --long: #45c486; --gamma: #a98cff;
+    --pivot: #eba845; --info: #62aef5; --pill-ink: #0d141d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d141d; --panel: #141d29; --panel-2: #18232f; --fg: #e1e7ee; --muted: #8b99aa;
+  --line: #253243; --line-strong: #4b5b6e; --short: #f2645c; --long: #45c486; --gamma: #a98cff;
+  --pivot: #eba845; --info: #62aef5; --pill-ink: #0d141d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: grid; gap: 14px; }
+.eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.runtime { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .08em; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--info); color: var(--info); justify-self: start; }
+.stale { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .06em; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--pivot); color: var(--pivot); justify-self: start; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 6vw, 56px); line-height: .95; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+h1 .dn { color: var(--short); } h1 .up { color: var(--long); }
+.thesis { font-size: 16px; max-width: 72ch; margin: 0; }
+.thesis b { font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.chip span { color: var(--muted); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
+.chip.short b { color: var(--short); } .chip.pivot b { color: var(--pivot); } .chip.gamma b { color: var(--gamma); } .chip.long b { color: var(--long); }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; letter-spacing: .02em; margin: 0; text-transform: uppercase; }
+.sub { color: var(--muted); font-size: 13px; margin: 2px 0 0; }
+.main { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.ladder-scroll { overflow-x: auto; }
+#ladder { width: 100%; min-width: 600px; height: auto; display: block; }
+#ladder text { font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+.flow { display: grid; gap: 10px; }
+.open-node { justify-self: start; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; border-radius: 6px; background: var(--fg); color: var(--bg); }
+.branches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .branches { grid-template-columns: minmax(0, 1fr); } }
+.br { border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 8px; padding: 10px 12px; background: var(--panel-2); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.br .when { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.br .name { font-family: var(--display); font-size: 21px; font-weight: 700; line-height: 1; color: var(--c); }
+.br p { margin: 0; font-size: 13px; }
+.br .live { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.tag { display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: var(--c); color: var(--pill-ink); letter-spacing: .04em; vertical-align: 2px; }
+.followon { border: 1px dashed var(--line-strong); border-radius: 8px; padding: 10px 12px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: baseline; }
+.followon .k { font-family: var(--display); font-weight: 700; font-size: 19px; }
+.followon p { margin: 0; font-size: 13px; }
+.setups { display: grid; gap: 8px; }
+.setup { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); }
+.grade { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1; color: var(--c); text-align: center; padding-top: 2px; }
+.grade small { display: block; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: .08em; margin-top: 4px; }
+.setup h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.setup .why { margin: 2px 0 6px; font-size: 12.5px; color: var(--muted); }
+.nums { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 2px 18px; font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.nums span { color: var(--muted); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+@media (max-width: 480px) { .nums { grid-template-columns: repeat(2, auto); } }
+.agree { margin: 0; font-size: 14px; }
+.agree b { font-family: var(--mono); font-weight: 600; font-size: 13px; }
+.sources { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+.src { border: 1px solid var(--line); border-left: 3px solid var(--c, var(--gamma)); border-radius: 8px; padding: 10px 12px; background: var(--panel-2); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.src h3 { margin: 0; font-family: var(--display); font-size: 19px; font-weight: 700; letter-spacing: .02em; }
+.src .asof { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.src dl { margin: 0; display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 3px 10px; font-size: 12.5px; }
+.src dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 1px; }
+.src dd { margin: 0; font-variant-numeric: tabular-nums; }
+.src .warn { color: var(--pivot); font-weight: 600; }
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 860px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+.rules h3 { font-family: var(--display); font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; margin: 0 0 6px; }
+.rules ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: 13.5px; }
+.rules b { font-family: var(--mono); font-weight: 600; font-size: 12.5px; }
+footer { color: var(--muted); font-size: 12px; display: grid; gap: 4px; }
+footer a { color: var(--info); }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="runtime">Run Thu Nov 26, 2026 · 7:32 PM ET (Thanksgiving, market closed)</span>
+    <span class="stale">STALE: Tanuki TK2 snapshot 15:59 ET (3.5 h old) · overnight ONX1 as of Wed 19:30 ET (24 h old)</span>
+    <div class="eyebrow">NVDA · Fri Nov 27, 2026 · half day, cash close 13:00 ET · from TK2 (TanukiTrade) and MP1 (30-minute RTH profile) · single gamma source</div>
+    <h1>NVDA Nov 27 Playbook: <span class="up">buy the 150 reclaim, sell 155</span></h1>
+    <p class="thesis">After a 94-point slide from 218 to 124.51 (Nov 20), NVDA is in a violent two-way auction: Monday gapped up to 171.5, Tuesday and Wednesday built lower value. Wednesday gapped below Tuesday's range, opened test-drive up, and extended up in every period from G to M. That made a P-shaped Normal Variation day: value lower (VAH 148.8, POC 147.6, VAL 143.2), close 149.38 in the upper third above value. The M period ended in a spike from 148.9 to 150.37. The after-hours trade is long: 70% of TPOs are above settle, range 148.41–152.1, last 151.24, already above the spike top. Tanuki puts spot 151.22 in <b>negative gamma</b>, between P1 150 and the pT/HVL at 152.5, with max pain at 150 just below. <b>Bullish above the 150 pivot (P1, Ab2, max pain, the spike top). Two 30-minute closes below 147.08, Wednesday's late low, mean change is under way: cut long size. The bull case is off after two 30-minute closes below 146.</b> Long overnight inventory and a P-shape that came from short covering both make a dip into 150 at the open likely. Buy the reclaim, not the first touch.</p>
+    <div class="chips">
+      <div class="chip"><span>AH last</span><b>151.24</b><span>Wed 19:30</span></div>
+      <div class="chip"><span>Settle</span><b>149.38</b></div>
+      <div class="chip pivot"><span>Pivot</span><b>150</b></div>
+      <div class="chip pivot"><span>Change</span><b>147.08</b></div>
+      <div class="chip short"><span>Invalidation</span><b>146</b></div>
+      <div class="chip gamma"><span>Tanuki HVL</span><b>152.5</b></div>
+      <div class="chip short"><span>Resistance</span><b>155 · 157.5</b></div>
+      <div class="chip"><span>Smart range</span><b>144.69–158.17</b></div>
+      <div class="chip"><span>Max pain</span><b>150</b></div>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="panel" aria-labelledby="ladder-h">
+      <div>
+        <h2 id="ladder-h">Level ladder</h2>
+        <p class="sub">To scale, 139–161. Thick lines mark a Tanuki stack that lines up with a market-profile reference. Bars are Tanuki net GEX by strike: purple is positive, red is negative.</p>
+      </div>
+      <div class="ladder-scroll">
+        <svg id="ladder" viewBox="0 0 680 916" role="img" aria-label="NVDA price ladder from 139 to 161 showing Tanuki net GEX by strike, setup zones, no-trade zones, the 150 pivot, the 147.08 change line, the 146 invalidation and the after-hours last 151.24"></svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:color-mix(in srgb, var(--short) 40%, transparent); border:1px solid var(--short)"></i>Short zone</span>
+        <span><i style="background:color-mix(in srgb, var(--long) 40%, transparent); border:1px solid var(--long)"></i>Long zone</span>
+        <span><i style="background:var(--gamma)"></i>Tanuki +GEX (length = size)</span>
+        <span><i style="background:var(--short)"></i>Tanuki −GEX</span>
+        <span><i style="background:repeating-linear-gradient(135deg, var(--line-strong) 0 2px, transparent 2px 6px)"></i>No-trade</span>
+        <span><i style="background:var(--pivot); height:3px"></i>Pivot / change / invalidation</span>
+      </div>
+    </section>
+
+    <div style="display:grid; gap:20px; min-width:0">
+      <section class="panel" aria-labelledby="flow-h">
+        <div>
+          <h2 id="flow-h">At 9:30, where does it open?</h2>
+          <p class="sub">Scenarios update on 30-minute period closes. Half day, so only periods A–G (9:30–13:00). The overnight read is from Wednesday evening, so check Friday's pre-market high and low before the open.</p>
+        </div>
+        <div class="flow">
+          <div class="open-node">9:30 ET open</div>
+          <div class="branches">
+            <div class="br" style="--c: var(--short)">
+              <div class="when">below 141.18 (Wed low)</div>
+              <div class="name">A · Gap below range</div>
+              <p>A full reversal of the after-hours buying, and outside Tanuki's 144.69 range low. Go with the gap toward the 140 stack (D+, nPV, PV). Below HVL there are no first-touch longs. Very unlikely.</p>
+              <div class="live">live: C (141.18 break)</div>
+            </div>
+            <div class="br" style="--c: var(--info)">
+              <div class="when">141.18 – 148.8</div>
+              <div class="name">C · Inside value</div>
+              <p>An open back inside value rejects the spike and the after-hours longs. The 147.6 POC is the magnet. Sell the break of 147.08 toward 146 and 145 (P2). The 148.4 long needs a failed break first.</p>
+              <div class="live">live: B (147.08 break), B (148.4 failed break), A+ only after a reclaim of 150</div>
+            </div>
+            <div class="br" style="--c: var(--long)">
+              <div class="when">above 148.8 (VAH) · likely about 151.2</div>
+              <div class="name">X · Above value</div>
+              <p>An open above the 150.37 spike top means the spike is accepted, so lean long. Expect an inventory dip toward 150. Buy the reclaim after a break of 150, buy acceptance above 152.5, and fade the first test of 155.</p>
+              <div class="live">live: A+ (150 reclaim), A (152.5 break), A+ (155 fade), A (157.5 fade)</div>
+            </div>
+          </div>
+          <div class="followon">
+            <span class="k" style="color:var(--long)">A → B</span>
+            <p>The gap fills: two 30-minute closes back above 141.18. Expect a rotation to 143.2 (VAL), then 145 (P2). No longs until then. <span class="tag" style="--c: var(--long)">B</span></p>
+            <span class="k" style="color:var(--pivot)">Any → change</span>
+            <p>Two 30-minute closes below 147.08, Wednesday's late low (the M-period low before the spike): change is under way. Halve long size. Shorts toward 146 and 145 are allowed.</p>
+            <span class="k" style="color:var(--pivot)">Any → off</span>
+            <p>Two 30-minute closes below 146 (Tanuki C7, Wednesday's IB high 145.98): the bull case is off. Price is back in Wednesday's lower distribution. Targets are P2 at 145, then VAL at 143.2.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="setups-h">
+        <div>
+          <h2 id="setups-h">Setups</h2>
+          <p class="sub">A+ needs a heavy Tanuki stack and a market-profile reference within about two TPO rows. R = reward ÷ risk from the zone's middle. Every stop sits beyond its zone and at least 1.0 from the zone's middle. IV rank is 87 and the 30-session median IB is 4.53, so size down.</p>
+        </div>
+        <div class="setups">
+          <div class="setup" style="--c: var(--long)">
+            <div class="grade">A+<small>LONG</small></div>
+            <div>
+              <h3>150 failed-break long</h3>
+              <p class="why">Tanuki P1 150 (−90, the biggest put strike), Ab2 and max pain 150, inside Wednesday's M-period spike (148.9–150.37) and 0.37 under the 150.37 high. It sits below HVL, so don't buy the first touch. Wait for a break under 150, then a 5-minute close back above 150.2.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>149.9–150.3</b><b>148.8</b><b>152.1 · 152.5 · 155</b><b>1.5 / 1.8 / 3.8</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--short)">
+            <div class="grade">A+<small>SHORT</small></div>
+            <div>
+              <h3>155 stack fade (against the bias)</h3>
+              <p class="why">Tanuki's cT, C4 and Ab3 (a CF3 stack) land on Tuesday's VAH of 155, with Tuesday's close of 155.51 just above. Above HVL dealers absorb moves, so this is the best fade on the sheet. Sell the first test only if it stalls.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>154.8–155.3</b><b>156.1</b><b>153.2 · 152.5</b><b>1.8 / 2.4</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--long)">
+            <div class="grade">A<small>LONG</small></div>
+            <div>
+              <h3>152.5 HVL break long</h3>
+              <p class="why">Tanuki pT and HVL at 152.5, with the after-hours high 152.1 four rows below. Take it after a 30-minute close above 152.5. Above that line the state moves to positive transition, so expect a grind to 155 rather than a run.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>152.5–152.9</b><b>151.6</b><b>155 · 157.5</b><b>2.1 / 4.4</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--short)">
+            <div class="grade">A<small>SHORT</small></div>
+            <div>
+              <h3>157.5 C1 fade</h3>
+              <p class="why">Tanuki C1 157.5 is the biggest strike ($9.31M), with the smart-range high at 158.17, inside Tuesday's 156.5–159.92 selling tail. The nearest profile reference is 10 rows off, so this is graded A, not A+. Only in play after 155 gives way.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>157.3–157.9</b><b>158.7</b><b>155.5 · 155 · 153.2</b><b>1.9 / 2.4 / 4.0</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--long)">
+            <div class="grade">B<small>LONG</small></div>
+            <div>
+              <h3>148.4 after-hours-low failed-break long</h3>
+              <p class="why">Wednesday's VAH 148.8, the spike base 148.9 and the after-hours low 148.41 are a strong profile shelf. Tanuki has only small strikes here (148: $2.21M, 149: $1.62M). Wait for a break under 148.4, then a close back above it.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>148.4–148.8</b><b>147.5</b><b>150 · 151.2 · 152.1</b><b>1.3 / 2.4 / 3.2</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--short)">
+            <div class="grade">B<small>SHORT</small></div>
+            <div>
+              <h3>147.08 break short (change)</h3>
+              <p class="why">Wednesday's late low, just under the 147.6 POC. A break means the spike has failed. Tanuki C7 146 and P2 145 (−75) sit below. Take it on a 5-minute close under the zone.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>146.9–147.3</b><b>148.2</b><b>146 · 145 · 143.2</b><b>1.0 / 1.9 / 3.5</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--short)">
+            <div class="grade">C<small>SHORT</small></div>
+            <div>
+              <h3>141.18 break short (scenario A only)</h3>
+              <p class="why">Wednesday's low, which had almost no excess (a 2-row tail). The Tanuki CF3 at 140 (D+, nPV, PV) is the first target. It lies outside the smart range, so it is unlikely on a half day.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>140.9–141.3</b><b>142.3</b><b>140 · 135</b><b>0.9 / 5.1</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="src-h">
+    <div>
+      <h2 id="src-h">What each source says</h2>
+      <p class="sub">Read from the files in the NVDA data folder only. Nothing was looked up separately.</p>
+    </div>
+    <p class="agree"><b>This plan has a single gamma source.</b> TanukiTrade is the only gamma feed for NVDA, since TLADe and XposureFlow cover only the S&amp;P. Tanuki's label stack counts as one source, and the market profile is the independent second leg. The two agree on <b>150</b> (P1, Ab2 and max pain on Wednesday's spike high) and <b>155</b> (the CF3 stack on Tuesday's VAH). Spot is in negative gamma just above P1, so moves extend until price gets back above <b>152.5</b>.</p>
+    <div class="sources">
+      <div class="src" style="--c: var(--gamma)">
+        <h3>TanukiTrade (only gamma source)</h3>
+        <div class="asof">Snapshot Thu 15:59 ET · Nov 27 expiry (1 DTE) · spot 151.22 · <span class="warn">stale (3.5 h)</span></div>
+        <dl>
+          <dt>State</dt><dd>NEG (P1 &lt; spot &lt; pT), ladder in order, OI share 5.34%. Moves tend to extend.</dd>
+          <dt>Ladder</dt><dd>P1 150 · pT 152.5 · HVL 152.5 · cT 155 · C1 157.5</dd>
+          <dt>Net GEX</dt><dd>+$29.43M (+$10.35M vs prior close) · net DEX +$83.02M. Net GEX is small and positive despite the NEG state.</dd>
+          <dt>Range</dt><dd>Smart range 144.69–158.17 (−6.53 / +6.95), call skew</dd>
+          <dt>Max pain</dt><dd>150 (−0.83% from spot): the settlement magnet for the Friday expiry</dd>
+          <dt>IV</dt><dd>IV rank 87.3 · IV percentile 100 · IVX 78.4 (−4.4% over 5 days)</dd>
+          <dt>Stacks</dt><dd>160 CF5 (C2, Ab1, AbOI, nCV, CV) · 155 CF3 · 165 CF3 · 140 CF3 · 150 CF2 · 152.5 CF2</dd>
+          <dt>Walls</dt><dd>157.5 +9.31 · 150 −8.42 · 145 −6.97 · 160 +6.40 · 162.5 +4.91 · 155 +4.48 ($M)</dd>
+          <dt>Note</dt><dd class="warn">The snapshot is stamped on Thanksgiving with the market closed. It probably carries Wednesday's after-hours chain.</dd>
+        </dl>
+      </div>
+      <div class="src" style="--c: var(--long)">
+        <h3>Market profile</h3>
+        <div class="asof">30-min RTH · Wed Nov 25 · after hours as of Wed 19:30 (<span class="warn">stale</span>)</div>
+        <dl>
+          <dt>Day</dt><dd>OTD up from a gap below Tuesday's range · IB 141.18–145.98 (4.8) · extension up G–M · NV up, P-shape · RF +10</dd>
+          <dt>Value</dt><dd>VAH 148.8 · POC 147.6 · VAL 143.2 · lower (second lower-value day) · close 149.38 in the upper third, above value</dd>
+          <dt>Ends</dt><dd>M-period spike 148.9–150.37 (15 rows) · minimal excess at the 141.18 low</dd>
+          <dt>After hrs</dt><dd>148.41–152.1 · LONG inventory, 70% above settle · last 151.24, above the range · 7 bars</dd>
+          <dt>Context</dt><dd>30-session median IB 4.53 · Tuesday VAH 155, POC 153.2 · Monday high 171.5</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel rules" aria-label="Rules">
+    <div>
+      <h3>Before the open</h3>
+      <ul>
+        <li>The overnight read is from Wednesday 19:30. Re-check Friday's pre-market high and low and re-run before 9:30, because single-stock news and gaps matter.</li>
+        <li>Half day: cash closes at 13:00 ET, so there are 7 periods (A–G) and thin holiday liquidity. Max pain of 150 can pin into the close.</li>
+        <li>Note where 9:30 opens: below <b>141.18</b>, inside value, or above <b>148.8</b>, and whether it is above or inside the <b>148.9–150.37</b> spike.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>During the session</h3>
+      <ul>
+        <li>Fast arrival: a move of <b>1.5+</b> in the 30 minutes before a zone means waiting for a 5-minute close back inside it.</li>
+        <li>An IB under <b>2.72</b> means trading smaller and expecting rotation. Wednesday's IB was 4.8.</li>
+        <li>Below HVL <b>152.5</b>, there are no support longs on the first touch.</li>
+        <li>Skip the middles: <b>150.5–152</b>, <b>153.2–154.6</b> and <b>147.7–148.3</b>.</li>
+        <li>Two 30-minute closes below <b>147.08</b> mean cutting long size.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Volatility</h3>
+      <ul>
+        <li>IV rank is 87 at the 100th percentile, and daily ranges have run 9–22 points. Stops of about 1.0–1.3 are tight here, so trade half size.</li>
+        <li>Two 30-minute closes below <b>146</b> mean standing aside on longs.</li>
+        <li>Friday is an expiry day (1 DTE): 150 and 155 can pin.</li>
+      </ul>
+    </div>
+  </section>
+
+  
+<section id="vats-plan" style="max-width:1200px;margin:24px auto;padding:16px;border:1px solid #2a3a2e;
+  border-radius:8px;background:#0a160d;color:#3dff7a;font:13px/1.5 Consolas,ui-monospace,monospace">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+    <b style="font-size:15px">NVDA plan string (VATS Multi Map)</b>
+    <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('vats-plan-text').textContent)
+      .then(()=>{this.textContent='Copied'; setTimeout(()=>this.textContent='Copy',1500)})"
+      style="background:#3dff7a;color:#050c07;border:0;border-radius:4px;padding:6px 14px;font:inherit;font-weight:700;cursor:pointer">Copy</button>
+  </div>
+  <pre id="vats-plan-text" style="margin:0;white-space:pre-wrap;word-break:break-all;user-select:all">D,2026-11-27;P,SYM,NVDA;P,VAH,148.8;P,VAL,143.2;P,POC,147.6;P,PLOW,141.18;P,PIVOT,150;P,CHANGE,147.08;P,INVAL,146;P,SETTLE,149.38;P,ZG,152.5;P,NARROWIB,2.72;P,FAST,1.5;P,BIAS,1;P,ONH,152.1;P,ONL,148.41;P,ONPCT,30;P,WUNIT,M;L,TK C2 Ab1 AbOI nCV CV (CF5),160,2;L,TK smart range high,158.17,1;L,TK C1 / Tue tail 156.5-159.92,157.5,3;L,TK cT C4 Ab3 / Tue VAH 155,155,4;L,Tue POC,153.2,1;L,TK pT HVL / AH high 152.1,152.5,4;L,AH high,152.1,2;L,Wed high / M spike top,150.37,2;L,TK P1 Ab2 / max pain / Wed spike,150,4;L,Wed settle,149.38,1;L,Wed M spike base,148.9,2;L,Wed VAH,148.8,2;L,AH low,148.41,2;L,Wed POC,147.6,2;L,Wed late low (change),147.08,2;L,TK C7 / Wed IB high 145.98,146,2;L,TK P2,145,3;L,TK smart range low,144.69,1;L,Wed VAL,143.2,2;L,Wed low,141.18,2;L,TK D+ nPV PV (CF3),140,2;W,157.5,9.31;W,150,8.42;W,145,6.97;W,160,6.4;W,162.5,4.91;W,155,4.48;W,146,2.65;W,148,2.21;N,No-trade: P1 to HVL middle,150.5,152;N,No-trade: HVL to cT middle,153.2,154.6;N,No-trade: Wed POC to VAH,147.7,148.3;S,150 failed-break long,L,149.9,150.3,148.8,152.1,152.5,155,A+,XC;S,155 stack fade,S,154.8,155.3,156.1,153.2,152.5,,A+,X;S,152.5 HVL break long,L,152.5,152.9,151.6,155,157.5,,A,X;S,157.5 C1 fade,S,157.3,157.9,158.7,155.5,155,153.2,A,X;S,148.4 AH-low failed-break long,L,148.4,148.8,147.5,150,151.2,152.1,B,XC;S,147.08 break short,S,146.9,147.3,148.2,146,145,143.2,B,C;S,141.18 break short,S,140.9,141.3,142.3,140,135,,C,A;T,A,Below 141.18 Wed low: sell the break toward the 140 TK stack. No first-touch longs below HVL;T,B,Gap fill: two 30m closes back above 141.18 open a rotation to 143.2 VAL then 145 P2. Shorts wait for 147;T,C,Inside value: spike rejected. 147.6 POC magnet. Sell the 147.08 break to 146 then 145. Long 148.4 only on a failed break;T,X,Above VAH: spike accepted so lean long. Buy the 150 reclaim after a break. Buy acceptance above 152.5 HVL. Fade the first 155 test;T,W,Change: two 30m closes below 147.08 (Wed late low). Halve longs. Shorts allowed toward 146 and 145;T,I,Off: two 30m closes below 146. Bull case off. Targets 145 P2 then 143.2 VAL;T,PRE,Half day with a 13:00 close. AH data from Wed 19:30 is stale and long 148.41-152.1. Recheck pre-market. TK is the only gamma source;</pre>
+  <div style="margin-top:8px;color:#1f9e4a">Paste into the VATS Multi Map indicator's "Plan string" input on a NVDA chart.</div>
+</section>
+<footer>
+    <div>Sources: data\NVDA files read at 19:32 ET on Thu Nov 26: source_latest.txt (TK2 TanukiTrade, snapshot 15:59 ET, Nov 27 expiry), profile_latest.txt (MP1 for Nov 24 and Nov 25, plus ONX1 after hours as of Nov 25 19:30), profile_last_30_sessions.txt. current_plan.txt was empty.</div>
+    <div>Grades count agreeing signals; they are not measured win rates. Educational analysis, not personalized financial advice.</div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const svg = document.getElementById('ladder');
+  const NS = 'http://www.w3.org/2000/svg';
+  const TOP = 30, HI = 161, LO = 139, K = 39;
+  const y = p => TOP + (HI - p) * K;
+  const AX = 84, WALL_X = 92, WALL_MAX = 108, SET_X = 210, SET_W = 200, LINE_END = 416, LBL_X = 424;
+  function el(tag, attrs, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    svg.appendChild(e);
+    return e;
+  }
+  const defs = el('defs', {});
+  const pat = document.createElementNS(NS, 'pattern');
+  pat.setAttribute('id', 'hatch'); pat.setAttribute('width', '6'); pat.setAttribute('height', '6');
+  pat.setAttribute('patternUnits', 'userSpaceOnUse'); pat.setAttribute('patternTransform', 'rotate(45)');
+  const pl = document.createElementNS(NS, 'line');
+  pl.setAttribute('x1', '0'); pl.setAttribute('y1', '0'); pl.setAttribute('x2', '0'); pl.setAttribute('y2', '6');
+  pl.setAttribute('style', 'stroke: var(--line-strong); stroke-width: 1.5');
+  pat.appendChild(pl); defs.appendChild(pat);
+
+  for (let p = LO; p <= HI; p += 1) {
+    el('line', { x1: AX - 4, x2: AX, y1: y(p), y2: y(p), style: 'stroke: var(--line-strong)' });
+    el('text', { x: AX - 8, y: y(p) + 3.5, 'text-anchor': 'end', style: 'fill: var(--muted); font: 10px var(--mono)' }, p);
+  }
+  el('line', { x1: AX, x2: AX, y1: TOP - 10, y2: y(LO) + 6, style: 'stroke: var(--line-strong); stroke-width: 1.5' });
+  [['TANUKI GEX', WALL_X], ['SETUP ZONES', SET_X], ['LEVELS', LBL_X]].forEach(([t, x]) =>
+    el('text', { x, y: 14, style: 'fill: var(--muted); font: 600 9.5px var(--mono); letter-spacing: .08em' }, t));
+
+  [[150.5, 152], [153.2, 154.6], [147.7, 148.3]].forEach(([a, b]) => {
+    el('rect', { x: WALL_X, y: y(b), width: SET_X + SET_W - WALL_X, height: y(a) - y(b), fill: 'url(#hatch)', style: 'opacity: .55' });
+    el('text', { x: SET_X + SET_W - 4, y: y((a + b) / 2) + 3, 'text-anchor': 'end', style: 'fill: var(--muted); font: 600 9px var(--mono); letter-spacing: .08em' }, 'NO-TRADE');
+  });
+
+  const levels = [
+    [160, 'TK C2 · Ab1 · AbOI · nCV · CV (CF5)', 2],
+    [158.17, 'TK smart-range high', 1],
+    [157.5, 'TK C1 (biggest +GEX) · Tue tail 156.5–159.92', 3],
+    [155, 'TK cT · C4 · Ab3 · Tue VAH 155', 3],
+    [153.2, 'Tue POC', 1],
+    [152.5, 'TK pT · HVL · AH high 152.1', 3],
+    [150.37, 'Wed high · spike top', 2],
+    [150, 'TK P1 · Ab2 · max pain · Wed spike', 3],
+    [149.38, 'Wed settle', 1],
+    [148.8, 'Wed VAH · spike base 148.9 · AH low 148.41', 2],
+    [147.6, 'Wed POC', 1],
+    [146, 'TK C7 · Wed IB high 145.98', 2],
+    [145, 'TK P2 (−75)', 2],
+    [144.69, 'TK smart-range low', 1],
+    [143.2, 'Wed VAL', 2],
+    [141.18, 'Wed low', 2],
+    [140, 'TK D+ · nPV · PV (CF3)', 2]
+  ];
+  levels.forEach(([p, name, w]) => {
+    el('line', { x1: AX, x2: LINE_END, y1: y(p), y2: y(p),
+      style: `stroke: ${w === 3 ? 'var(--fg)' : 'var(--line-strong)'}; stroke-width: ${w === 3 ? 1.4 : 1}; opacity: ${w === 3 ? .75 : w === 2 ? .7 : .45}` + (w === 1 ? '; stroke-dasharray: 2 3' : '') });
+    const t = el('text', { x: LBL_X, y: y(p) + 3.5, style: 'fill: var(--fg); font: 11px var(--body)' });
+    const a = document.createElementNS(NS, 'tspan');
+    a.setAttribute('style', `font: ${w === 3 ? 600 : 500} 11px var(--mono)`);
+    a.textContent = String(p) + '  ';
+    const b = document.createElementNS(NS, 'tspan');
+    b.setAttribute('style', `fill: ${w === 3 ? 'var(--fg)' : 'var(--muted)'}`);
+    b.textContent = name;
+    t.appendChild(a); t.appendChild(b);
+  });
+
+  const walls = [[157.5, 9.31], [150, -8.42], [145, -6.97], [160, 6.4], [155, 4.48], [146, 2.65], [148, 2.21], [147, 2.02], [149, 1.62], [141, 1.56], [143, 1.45], [142, 1.4], [152.5, -1.26]];
+  walls.forEach(([p, w]) => el('rect', { x: WALL_X, y: y(p) - 3.5, width: WALL_MAX * Math.abs(w) / 9.31, height: 7, rx: 2, style: `fill: ${w > 0 ? 'var(--gamma)' : 'var(--short)'}; opacity: .85` }));
+
+  const setups = [
+    [157.3, 157.9, 'short', .22, 'A ▼ 157.5 C1 fade · stop 158.7'],
+    [154.8, 155.3, 'short', .34, 'A+ ▼ 155 stack fade · stop 156.1'],
+    [152.5, 152.9, 'long', .28, 'A ▲ 152.5 HVL break · stop 151.6'],
+    [149.9, 150.3, 'long', .38, 'A+ ▲ 150 reclaim · stop 148.8'],
+    [148.4, 148.8, 'long', .2, 'B ▲ 148.4 failed break · stop 147.5'],
+    [146.9, 147.3, 'short', .22, 'B ▼ 147.08 break · stop 148.2'],
+    [140.9, 141.3, 'short', .16, 'C ▼ 141.18 break · stop 142.3']
+  ];
+  setups.forEach(([lo, hi, dir, op, label]) => {
+    const c = dir === 'long' ? 'var(--long)' : 'var(--short)';
+    el('rect', { x: SET_X, y: y(hi), width: SET_W, height: y(lo) - y(hi), rx: 2, style: `fill: ${c}; fill-opacity: ${op}; stroke: ${c}; stroke-width: 1` });
+    el('text', { x: SET_X + 6, y: y((lo + hi) / 2) + 3.5, style: `fill: ${c}; font: 600 10.5px var(--body)` }, label);
+  });
+
+  function special(p, color, dash, pill, width) {
+    el('line', { x1: AX, x2: LINE_END, y1: y(p), y2: y(p), style: `stroke: ${color}; stroke-width: ${width}` + (dash ? '; stroke-dasharray: 6 4' : '') });
+    el('rect', { x: 2, y: y(p) - 8, width: 74, height: 16, rx: 3, style: `fill: ${color}` });
+    el('text', { x: 39, y: y(p) + 3.5, 'text-anchor': 'middle', style: 'fill: var(--pill-ink); font: 600 9.5px var(--mono); letter-spacing: .03em' }, pill);
+  }
+  special(146, 'var(--pivot)', true, 'INVAL 146', 2);
+  special(147.08, 'var(--pivot)', true, 'CHG 147.08', 1.5);
+  special(150, 'var(--pivot)', false, 'PIVOT 150', 2);
+
+  const LP = 151.24;
+  el('line', { x1: AX, x2: LINE_END, y1: y(LP), y2: y(LP), style: 'stroke: var(--info); stroke-width: 1.2; stroke-dasharray: 1 3' });
+  el('rect', { x: 2, y: y(LP) - 8, width: 74, height: 16, rx: 3, style: 'fill: var(--info)' });
+  el('text', { x: 39, y: y(LP) + 3.5, 'text-anchor': 'middle', style: 'fill: var(--pill-ink); font: 600 9.5px var(--mono)' }, 'LAST 151.24');
+  el('path', { d: `M ${AX - 1} ${y(LP) - 5} L ${AX + 7} ${y(LP)} L ${AX - 1} ${y(LP) + 5} Z`, style: 'fill: var(--info)' });
+
+  const shade = el('rect', { x: AX + 1, y: TOP - 10, width: 4, height: y(150) - TOP + 10, style: 'fill: var(--long); opacity: .55' });
+  el('rect', { x: AX + 1, y: y(150), width: 4, height: y(147.08) - y(150), style: 'fill: var(--long); opacity: .25' });
+  el('rect', { x: AX + 1, y: y(147.08), width: 4, height: y(146) - y(147.08), style: 'fill: var(--pivot); opacity: .45' });
+  el('rect', { x: AX + 1, y: y(146), width: 4, height: y(LO) + 6 - y(146), style: 'fill: var(--short); opacity: .45' });
+  svg.insertBefore(shade, svg.children[1]);
+})();
+</script>
