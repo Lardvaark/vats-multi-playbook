@@ -1,0 +1,413 @@
+<title>NQ Nov 27 Playbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #eef1f5; --panel: #ffffff; --panel-2: #f6f8fb; --fg: #16202c; --muted: #5a6778;
+  --line: #d6dde6; --line-strong: #9aa7b6; --short: #c7362f; --long: #16834d; --gamma: #6c46d6;
+  --pivot: #b26d0c; --info: #2470b8; --pill-ink: #ffffff;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141d; --panel: #141d29; --panel-2: #18232f; --fg: #e1e7ee; --muted: #8b99aa;
+    --line: #253243; --line-strong: #4b5b6e; --short: #f2645c; --long: #45c486; --gamma: #a98cff;
+    --pivot: #eba845; --info: #62aef5; --pill-ink: #0d141d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d141d; --panel: #141d29; --panel-2: #18232f; --fg: #e1e7ee; --muted: #8b99aa;
+  --line: #253243; --line-strong: #4b5b6e; --short: #f2645c; --long: #45c486; --gamma: #a98cff;
+  --pivot: #eba845; --info: #62aef5; --pill-ink: #0d141d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: grid; gap: 14px; }
+.eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.runtime { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .08em; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--line-strong); color: var(--muted); justify-self: start; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 6vw, 56px); line-height: .95; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+h1 .dn { color: var(--short); }
+.thesis { font-size: 16px; max-width: 72ch; margin: 0; }
+.thesis b { font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.chip span { color: var(--muted); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
+.chip.short b { color: var(--short); } .chip.pivot b { color: var(--pivot); } .chip.gamma b { color: var(--gamma); } .chip.long b { color: var(--long); }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; letter-spacing: .02em; margin: 0; text-transform: uppercase; }
+.sub { color: var(--muted); font-size: 13px; margin: 2px 0 0; }
+.main { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.ladder-scroll { overflow-x: auto; }
+#ladder { width: 100%; min-width: 600px; height: auto; display: block; }
+#ladder text { font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+.flow { display: grid; gap: 10px; }
+.open-node { justify-self: start; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; border-radius: 6px; background: var(--fg); color: var(--bg); }
+.branches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .branches { grid-template-columns: minmax(0, 1fr); } }
+.br { border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 8px; padding: 10px 12px; background: var(--panel-2); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.br .when { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.br .name { font-family: var(--display); font-size: 21px; font-weight: 700; line-height: 1; color: var(--c); }
+.br p { margin: 0; font-size: 13px; }
+.br .live { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.tag { display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: var(--c); color: var(--pill-ink); letter-spacing: .04em; vertical-align: 2px; }
+.followon { border: 1px dashed var(--line-strong); border-radius: 8px; padding: 10px 12px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: baseline; }
+.followon .k { font-family: var(--display); font-weight: 700; font-size: 19px; }
+.followon p { margin: 0; font-size: 13px; }
+.setups { display: grid; gap: 8px; }
+.setup { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); }
+.grade { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1; color: var(--c); text-align: center; padding-top: 2px; }
+.grade small { display: block; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: .08em; margin-top: 4px; }
+.setup h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.setup .why { margin: 2px 0 6px; font-size: 12.5px; color: var(--muted); }
+.nums { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 2px 18px; font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.nums span { color: var(--muted); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+@media (max-width: 480px) { .nums { grid-template-columns: repeat(2, auto); } }
+.agree { margin: 0; font-size: 14px; }
+.agree b { font-family: var(--mono); font-weight: 600; font-size: 13px; }
+.sources { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
+.src { border: 1px solid var(--line); border-left: 3px solid var(--c, var(--gamma)); border-radius: 8px; padding: 10px 12px; background: var(--panel-2); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.src h3 { margin: 0; font-family: var(--display); font-size: 19px; font-weight: 700; letter-spacing: .02em; }
+.src .asof { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.src dl { margin: 0; display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 3px 10px; font-size: 12.5px; }
+.src dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 1px; }
+.src dd { margin: 0; font-variant-numeric: tabular-nums; }
+.src .warn { color: var(--pivot); font-weight: 600; }
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 860px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+.rules h3 { font-family: var(--display); font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; margin: 0 0 6px; }
+.rules ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: 13.5px; }
+.rules b { font-family: var(--mono); font-weight: 600; font-size: 12.5px; }
+footer { color: var(--muted); font-size: 12px; display: grid; gap: 4px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="runtime">Run Thu Nov 26, 2026 · 7:05 PM ET · from the 7:03 PM data run</span>
+    <div class="eyebrow">NQ1! · Fri Nov 27, 2026 · from the app's strings: TanukiTrade (only gamma source) and the 30-minute RTH profile · checked against Dalton</div>
+    <h1>NQ Nov 27 Playbook: <span class="dn">sell rallies into 26355</span></h1>
+    <p class="thesis">Wednesday was a 1,119-point trend day up from 25027.5 that closed near its high. Thursday's holiday session gapped above Wednesday's range (gap 26146.25–26214 still open), built a tiny 108-point Neutral-Extreme-low day on thin volume and closed on its low at 26221.25. The overnight has already bought that close back: Globex is long, 94% of its TPOs above settle, last 26297.75 at the top of Thursday's value. Spot sits below Tanuki P1 26355, in <b>NEG_EXTENSION</b> with net GEX −$44.7M, so moves extend. <b>Bearish below the 26355 pivot, where Tanuki's five-label stack (P1 pT Ab1 D− CV) meets Tuesday's VAH 26355. Overnight is already above Thursday's late high 26292, so the change watch is live from the open: half size on shorts if two 30-minute closes hold above it. The bear case is off after two 30-minute closes above 26405.</b></p>
+    <div class="chips">
+      <div class="chip"><span>Globex last</span><b>26297.75</b><span>Thu 7 PM</span></div>
+      <div class="chip"><span>Settle</span><b>26221.25</b></div>
+      <div class="chip pivot"><span>Pivot</span><b>26355</b></div>
+      <div class="chip pivot"><span>Change</span><b>26292</b></div>
+      <div class="chip short"><span>Invalidation</span><b>26405</b></div>
+      <div class="chip gamma"><span>Tanuki HVL</span><b>26640</b></div>
+      <div class="chip gamma"><span>Max pain</span><b>26520</b></div>
+      <div class="chip long"><span>Support</span><b>26145 · 25940</b></div>
+      <div class="chip"><span>Smart range</span><b>25610–26784.5</b></div>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="panel" aria-labelledby="ladder-h">
+      <div>
+        <h2 id="ladder-h">Level ladder</h2>
+        <p class="sub">To scale, 25880–26820. Thicker lines mark levels where a Tanuki stack and a profile reference agree.</p>
+      </div>
+      <div class="ladder-scroll">
+        <svg id="ladder" viewBox="0 0 680 990" role="img" aria-label="NQ price ladder from 25880 to 26820 showing Tanuki net GEX strikes, setup zones, no-trade zones, the 26355 pivot, the 26292 change line, the 26405 invalidation and the Globex last 26297.75"></svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:color-mix(in srgb, var(--short) 40%, transparent); border:1px solid var(--short)"></i>Short zone</span>
+        <span><i style="background:color-mix(in srgb, var(--long) 40%, transparent); border:1px solid var(--long)"></i>Long zone</span>
+        <span><i style="background:var(--gamma)"></i>Tanuki |net GEX| (length = size)</span>
+        <span><i style="background:repeating-linear-gradient(135deg, var(--line-strong) 0 2px, transparent 2px 6px)"></i>No-trade</span>
+        <span><i style="background:var(--pivot); height:3px"></i>Pivot / change / invalidation</span>
+      </div>
+    </section>
+
+    <div style="display:grid; gap:20px; min-width:0">
+      <section class="panel" aria-labelledby="flow-h">
+        <div>
+          <h2 id="flow-h">At 9:30, where does it open?</h2>
+          <p class="sub">Scenarios update on 30-minute period closes, against Thursday's profile. The overnight had only 3 bars at this run, so ONH/ONL will move; re-read them before the open.</p>
+        </div>
+        <div class="flow">
+          <div class="open-node">9:30 ET open</div>
+          <div class="branches">
+            <div class="br" style="--c: var(--short)">
+              <div class="when">below 26214 (Thursday low)</div>
+              <div class="name">A · Below the low</div>
+              <p>Thursday's weak close follows through. Negative gamma lets the break run into the 26146–26214 gap and P3 26145. No first-touch long at 26145: wait for a flush and a close back above.</p>
+              <div class="live">live: B (26214 break), B long at 26145 after a failed break, C long at 25940</div>
+            </div>
+            <div class="br" style="--c: var(--info)">
+              <div class="when">26214 – 26310 (likely: about 26298)</div>
+              <div class="name">C · Inside value</div>
+              <p>Thursday's value is only 60 points wide and thin. Skip the 26245–26315 middle. The first rally into 26345–26365 is the best sell; the 26214 break is the second.</p>
+              <div class="live">live: A+, B</div>
+            </div>
+            <div class="br" style="--c: var(--pivot)">
+              <div class="when">above 26310 (Thursday VAH)</div>
+              <div class="name">X · Above VAH</div>
+              <p>Long overnight inventory carries straight to P1. Fade 26345–26365 only once it stalls. Acceptance above 26405 flips the plan toward max pain 26520.</p>
+              <div class="live">live: A+ (fade), B long only after the off rule</div>
+            </div>
+          </div>
+          <div class="followon">
+            <span class="k" style="color:var(--long)">A → B</span>
+            <p>Two 30-minute closes back above 26214: the break failed. Rotate to POC 26270. Shorts wait for 26355. <span class="tag" style="--c: var(--long)">B</span></p>
+            <span class="k" style="color:var(--pivot)">Any → change</span>
+            <p>Two 30-minute closes above 26292, Thursday's E-period late high: change under way. Half-size shorts, only on a stall at 26345–26365.</p>
+            <span class="k" style="color:var(--pivot)">Any → off</span>
+            <p>Two 30-minute closes above 26405: P1 is cleared. Stand aside on shorts. A pullback long at 26360–26380 aims for max pain 26520 and HVL 26640.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="setups-h">
+        <div>
+          <h2 id="setups-h">Setups</h2>
+          <p class="sub">Graded by Tanuki stack (one source) plus market-profile reference (the second leg). R = reward ÷ risk from the zone's middle. Every stop sits beyond the zone and at least 50 points from its middle. Friday is a holiday half session with thin liquidity: size down.</p>
+        </div>
+        <div class="setups">
+          <div class="setup" style="--c: var(--short)">
+            <div class="grade">A+<small>SHORT</small></div>
+            <div>
+              <h3>26355 P1 wall fade</h3>
+              <p class="why">Tanuki's biggest strike (P1, −$13.75M, weight −100) with pT, Ab1, D− and CV on it (CF 5), exactly at Tuesday's VAH 26355, and 33 above Thursday's high 26322. Sell the first rally into it once it slows.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>26345–26365</b><b>26410</b><b>26270 · 26214 · 26146.25</b><b>1.5 / 2.6 / 3.8</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--short)">
+            <div class="grade">B<small>SHORT</small></div>
+            <div>
+              <h3>26214 low break</h3>
+              <p class="why">Thursday's low and the overnight low 26219, under a Neutral-Extreme-low close. Negative gamma favours the break; the 26146–26214 gap is the first air pocket. Take it only on a 5-minute close below 26214. No Tanuki strike here, so B.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>26200–26210</b><b>26260</b><b>26146.25 · 26000 · 25945</b><b>1.1 / 3.7 / 4.7</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--long)">
+            <div class="grade">B<small>LONG</small></div>
+            <div>
+              <h3>26145 gap-fill failed-break long</h3>
+              <p class="why">Tanuki P3 26145 (−$6.71M, a single label) at Wednesday's high 26146.25, the top of the gap. Below HVL there are no first-touch longs: wait for a trade under 26140, then a 5-minute close back above 26146.25.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>26140–26155</b><b>26095</b><b>26214 · 26270 · 26310</b><b>1.3 / 2.3 / 3.1</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--long)">
+            <div class="grade">B<small>LONG</small></div>
+            <div>
+              <h3>Above-26405 pullback long (only after the off rule)</h3>
+              <p class="why">Once two 30-minute closes hold above 26405, P1 turns from lid to floor. Buy the first pullback toward 26360–26380 for max pain 26520 and HVL 26640. Still below HVL, so it needs the acceptance first.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>26360–26380</b><b>26315</b><b>26520 · 26640</b><b>2.7 / 4.9</b></div>
+            </div>
+          </div>
+          <div class="setup" style="--c: var(--long)">
+            <div class="grade">C<small>LONG</small></div>
+            <div>
+              <h3>25940 P2 flush long</h3>
+              <p class="why">Tanuki P2 + Ab3 (CF 2, −$9.54M), 58 under Tuesday's low 25998. No profile reference close enough, so C. Failed-break entry only.</p>
+              <div class="nums"><span>Entry</span><span>Stop</span><span>Targets</span><span>R</span><b>25930–25950</b><b>25885</b><b>26000 · 26146.25</b><b>1.1 / 3.8</b></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="src-h">
+    <div>
+      <h2 id="src-h">What each source says</h2>
+      <p class="sub">Read from the app's strings (data run 7:03 PM ET Thursday). Nothing here was looked up separately.</p>
+    </div>
+    <p class="agree"><b>This plan has a single gamma source.</b> TanukiTrade is the only gamma data for NQ; TLADe and XposureFlow cover only the S&amp;P. Every Tanuki stack counts as one source, and the market profile is the independent second leg. The two agree at <b>26355</b> (P1 stack + Tuesday VAH) and roughly at <b>26145</b> (P3 + Wednesday high / gap). Spot is below P1 and far below HVL 26640, so plan for moves that extend, not fades in the middle.</p>
+    <div class="sources">
+      <div class="src" style="--c: var(--gamma)">
+        <h3>TanukiTrade (only gamma source)</h3>
+        <div class="asof">Thu 15:59 snapshot · Nov 27 expiry (1 DTE) · spot 26214.25 · predates the overnight (normal for an evening run)</div>
+        <dl>
+          <dt>State</dt><dd>NEG_EXTENSION (spot at/below P1), negative polarity, ladder not broken · OI share 3.89%</dd>
+          <dt>Ladder</dt><dd>P1 26355 (−100) = pT 26355 · HVL 26640 · cT 26765 = C1 26765 (+54.6)</dd>
+          <dt>Net GEX</dt><dd>−$44.7M, +$18.5M vs prior close (less negative) · net DEX −$1,655.75M (+$1,289M)</dd>
+          <dt>Range</dt><dd>Smart range 25610–26784.5 (−604 / +570, put skew)</dd>
+          <dt>Max pain</dt><dd>26520, 1.17% above spot: settlement magnet only if P1 gives</dd>
+          <dt>IV</dt><dd class="warn">IV rank 79.1 · percentile 99.99 · IVX 37.5 (−9.9% over 5 days): extreme vol, wide stops</dd>
+          <dt>Strikes</dt><dd>P1 26355 $13.75M · P2 25940 $9.54M · C1 26765 $7.51M · P3 26145 $6.71M · P7/D+ 25735 · HVL 26640 $2.24M</dd>
+          <dt>Stacks</dt><dd>26355 ×5 · 26765 ×4 · 25940 ×2 · 25735 ×2 (24705, 28825, 22645 are too far to use)</dd>
+        </dl>
+      </div>
+      <div class="src" style="--c: var(--long)">
+        <h3>Market profile</h3>
+        <div class="asof">TradingView 30-min RTH · Thu Nov 26 (holiday, A–G only) · ONX1 at 19:00, 3 bars</div>
+        <dl>
+          <dt>Thu</dt><dd>ORR up, gap above Wed range · Neutral Extreme low · range 108 · IB 92.25 · RX up D, down G · D shape · close 26221.25 on the low, lower third, below value</dd>
+          <dt>Value</dt><dd>VAH 26310 · POC 26270 · VAL 26250 · higher than Wed (25065–25845) · volume ~5% of Wed: thin references</dd>
+          <dt>Wed</dt><dd>Trend day up 25027.5 → 26146.25, closed 26104.25 · gap 26146.25–26214 unfilled</dd>
+          <dt>Tue</dt><dd>VAH 26355 · POC 26275 · VAL 26125 · high 26509.75 · low 25998</dd>
+          <dt>Overnight</dt><dd>26219–26302.75 · long, 94% above settle · last 26297.75 in value</dd>
+          <dt>30 days</dt><dd>Down from 30045 to 24976.5 (Nov 20); median IB 306.5, ranges 400–1,500. Two-day rebound is still inside a downtrend.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel rules" aria-label="Rules">
+    <div>
+      <h3>Before the open</h3>
+      <ul>
+        <li>Friday after Thanksgiving: expect the usual early equity-futures close (check the exchange calendar) and thin liquidity.</li>
+        <li>Long overnight inventory at the top of value often corrects at the open: watch for a dip back toward POC <b>26270</b>.</li>
+        <li>Note where 9:30 opens: below <b>26214</b>, inside, or above <b>26310</b>.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>During the session</h3>
+      <ul>
+        <li>Fast arrival: <b>55+ pts</b> in the 30 minutes before a zone means wait for a 5-minute close back inside it.</li>
+        <li>IB under <b>185 pts</b>: trade smaller, expect rotation. Thursday's IB was 92.25 (holiday).</li>
+        <li>Below HVL <b>26640</b>, no support longs on the first touch.</li>
+        <li>Skip the middle: <b>26245–26315</b> and <b>26165–26195</b>.</li>
+        <li>Two 30-minute closes above <b>26292</b>: half-size shorts.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Volatility</h3>
+      <ul>
+        <li>IV percentile 99.99 and NEG_EXTENSION: 50-point stops are the minimum, not generous.</li>
+        <li>Two 30-minute closes above <b>26405</b>: stand aside on shorts.</li>
+        <li>Nov 27 is the Tanuki expiry read (1 DTE): max pain 26520 can pull late if P1 breaks.</li>
+      </ul>
+    </div>
+  </section>
+
+  
+<section id="vats-plan" style="max-width:1200px;margin:24px auto;padding:16px;border:1px solid #2a3a2e;
+  border-radius:8px;background:#0a160d;color:#3dff7a;font:13px/1.5 Consolas,ui-monospace,monospace">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+    <b style="font-size:15px">NQ plan string (VATS Multi Map)</b>
+    <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('vats-plan-text').textContent)
+      .then(()=>{this.textContent='Copied'; setTimeout(()=>this.textContent='Copy',1500)})"
+      style="background:#3dff7a;color:#050c07;border:0;border-radius:4px;padding:6px 14px;font:inherit;font-weight:700;cursor:pointer">Copy</button>
+  </div>
+  <pre id="vats-plan-text" style="margin:0;white-space:pre-wrap;word-break:break-all;user-select:all">D,2026-11-27;P,SYM,NQ;P,VAH,26310;P,VAL,26250;P,POC,26270;P,PLOW,26214;P,PIVOT,26355;P,CHANGE,26292;P,INVAL,26405;P,SETTLE,26221.25;P,ZG,26640;P,NARROWIB,185;P,FAST,55;P,BIAS,-1;P,ONH,26302.75;P,ONL,26219;P,ONPCT,6;P,WUNIT,M;L,TK smart range high,26784.5,1;L,TK C1 cT Ab2 nCV,26765,3;L,TK HVL,26640,3;L,TK max pain,26520,2;L,Tue high,26509.75,1;L,Thu overnight high,26436,1;L,TK P1 pT Ab1 D- CV / Tue VAH 26355,26355,4;L,Thu high / D-period RX up,26322,2;L,Thu VAH / ONH 26302.75,26310,2;L,Thu E-period late high (change),26292,1;L,Thu POC / Tue POC 26275,26270,2;L,Thu VAL,26250,1;L,Thu low PLOW / ONL 26219 / settle 26221.25,26214,2;L,TK P3 / Wed high 26146.25 / gap top,26146.25,3;L,Tue VAL,26125,1;L,Wed close,26104.25,1;L,Tue low,25998,2;L,TK P2 Ab3,25940,3;L,Wed VAH,25845,1;L,TK P7 D+,25735,2;L,TK smart range low,25610,1;W,26355,13.750;W,25940,9.540;W,26765,7.510;W,26145,6.710;W,25735,2.740;W,26640,2.240;W,26190,1.660;W,26805,1.470;N,No-trade: Thu value / overnight middle,26245,26315;N,No-trade: gap middle,26165,26195;S,26355 P1 wall fade,S,26345,26365,26410,26270,26214,26146.25,A+,CX;S,26214 low break,S,26200,26210,26260,26146.25,26000,25945,B,AC;S,26145 gap-fill failed-break long,L,26140,26155,26095,26214,26270,26310,B,AB;S,Above 26405 pullback long,L,26360,26380,26315,26520,26640,,B,X;S,25940 P2 flush long,L,25930,25950,25885,26000,26146.25,,C,A;T,A,Below 26214 PLOW neg gamma lets the break run. Sell 26200-26210 on a 5m close below. Targets 26146 then 26000. No first-touch long at 26145;T,B,Two 30m closes back above 26214 = break failed. Rotate to 26270 POC. Shorts wait for 26355. Long 26145 only after a failed-break reclaim;T,C,Inside 26214-26310 skip the 26245-26315 middle. Sell the first rally into 26345-26365 P1 + Tue VAH. Sell a 26214 break on a 5m close;T,X,Above 26310 VAH look for 26355 P1. Fade 26345-26365 on a stall. Two 30m closes above 26405 = bear off and look to 26520 max pain;T,W,Two 30m closes above 26292 late high = change under way. Half-size shorts and only at 26345-26365 after a stall;T,I,Two 30m closes above 26405 = bear case off. Stand aside on shorts. Pullback long 26360-26380 for 26520 max pain then 26640 HVL;T,PRE,Fri holiday half session and thin tape. Tanuki is the only gamma source: NEG_EXTENSION below P1 26355. ON long 94% above settle at Thu VAH;</pre>
+  <div style="margin-top:8px;color:#1f9e4a">Paste into the VATS Multi Map indicator's "Plan string" input on a NQ chart.</div>
+</section>
+<footer>
+    <div>Sources: the app's NQ strings, data run Thu Nov 26 7:03 PM ET (all files within 20 minutes, none stale): TK2 (TanukiTrade key levels, 15:59 snapshot, Nov 27 expiry), MP1 (TradingView 30-minute RTH profiles for Nov 25 and Nov 26, the last 30 sessions) and ONX1 (overnight in progress, 3 bars). No TLADe or XposureFlow for NQ.</div>
+    <div>Grades count agreeing signals; they are not measured win rates. Educational analysis, not personalized financial advice.</div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const svg = document.getElementById('ladder');
+  const NS = 'http://www.w3.org/2000/svg';
+  const TOP = 30, HI = 26820, LO = 25880, K = 1.0;
+  const y = p => TOP + (HI - p) * K;
+  const AX = 84, WALL_X = 92, WALL_MAX = 108, SET_X = 210, SET_W = 200, LINE_END = 416, LBL_X = 424;
+  function el(tag, attrs, text) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    svg.appendChild(e);
+    return e;
+  }
+  const defs = el('defs', {});
+  const pat = document.createElementNS(NS, 'pattern');
+  pat.setAttribute('id', 'hatch'); pat.setAttribute('width', '6'); pat.setAttribute('height', '6');
+  pat.setAttribute('patternUnits', 'userSpaceOnUse'); pat.setAttribute('patternTransform', 'rotate(45)');
+  const pl = document.createElementNS(NS, 'line');
+  pl.setAttribute('x1', '0'); pl.setAttribute('y1', '0'); pl.setAttribute('x2', '0'); pl.setAttribute('y2', '6');
+  pl.setAttribute('style', 'stroke: var(--line-strong); stroke-width: 1.5');
+  pat.appendChild(pl); defs.appendChild(pat);
+
+  for (let p = 25900; p <= 26800; p += 50) {
+    el('line', { x1: AX - 4, x2: AX, y1: y(p), y2: y(p), style: 'stroke: var(--line-strong)' });
+    el('text', { x: AX - 8, y: y(p) + 3.5, 'text-anchor': 'end', style: 'fill: var(--muted); font: 10px var(--mono)' }, p);
+  }
+  el('line', { x1: AX, x2: AX, y1: TOP - 10, y2: y(LO) + 6, style: 'stroke: var(--line-strong); stroke-width: 1.5' });
+  [['TANUKI GEX', WALL_X], ['SETUP ZONES', SET_X], ['LEVELS', LBL_X]].forEach(([t, x]) =>
+    el('text', { x, y: 14, style: 'fill: var(--muted); font: 600 9.5px var(--mono); letter-spacing: .08em' }, t));
+
+  [[26245, 26315], [26165, 26195]].forEach(([a, b]) => {
+    el('rect', { x: WALL_X, y: y(b), width: SET_X + SET_W - WALL_X, height: y(a) - y(b), fill: 'url(#hatch)', style: 'opacity: .55' });
+    el('text', { x: SET_X + SET_W - 4, y: y((a + b) / 2) + 3, 'text-anchor': 'end', style: 'fill: var(--muted); font: 600 9px var(--mono); letter-spacing: .08em' }, 'NO-TRADE');
+  });
+
+  const levels = [
+    [26784.5, 'Tanuki smart range high', 1],
+    [26765, 'TK C1 · cT · Ab2 · nCV (CF 4)', 2],
+    [26640, 'TK HVL', 2],
+    [26520, 'TK max pain', 2],
+    [26509.75, 'Tue high', 1],
+    [26436, 'Thu overnight high', 1],
+    [26355, 'TK P1 · pT · Ab1 · D− · CV · Tue VAH', 3],
+    [26322, 'Thu high (D-period RX up)', 2],
+    [26310, 'Thu VAH · ONH 26302.75', 2],
+    [26270, 'Thu POC · Tue POC 26275', 2],
+    [26250, 'Thu VAL', 1],
+    [26214, 'Thu low (PLOW) · ONL 26219 · settle 26221.25', 2],
+    [26146.25, 'TK P3 26145 · Wed high · gap top', 3],
+    [26125, 'Tue VAL', 1],
+    [26104.25, 'Wed close', 1],
+    [25998, 'Tue low', 2],
+    [25940, 'TK P2 · Ab3 (CF 2)', 2]
+  ];
+  levels.forEach(([p, name, w]) => {
+    el('line', { x1: AX, x2: LINE_END, y1: y(p), y2: y(p),
+      style: `stroke: ${w === 3 ? 'var(--fg)' : 'var(--line-strong)'}; stroke-width: ${w === 3 ? 1.4 : 1}; opacity: ${w === 3 ? .75 : w === 2 ? .7 : .45}` + (w === 1 ? '; stroke-dasharray: 2 3' : '') });
+    const t = el('text', { x: LBL_X, y: y(p) + 3.5, style: 'fill: var(--fg); font: 11px var(--body)' });
+    const a = document.createElementNS(NS, 'tspan');
+    a.setAttribute('style', `font: ${w === 3 ? 600 : 500} 11px var(--mono)`);
+    a.textContent = String(p) + '  ';
+    const b = document.createElementNS(NS, 'tspan');
+    b.setAttribute('style', `fill: ${w === 3 ? 'var(--fg)' : 'var(--muted)'}`);
+    b.textContent = name;
+    t.appendChild(a); t.appendChild(b);
+  });
+
+  const walls = [[26805, 1.47], [26765, 7.51], [26640, 2.24], [26355, 13.75], [26190, 1.66], [26145, 6.71], [25940, 9.54]];
+  walls.forEach(([p, w]) => el('rect', { x: WALL_X, y: y(p) - 3.5, width: WALL_MAX * w / 13.75, height: 7, rx: 2, style: 'fill: var(--gamma); opacity: .85' }));
+
+  const setups = [
+    [26345, 26365, 'short', .38, 'A+ ▼ 26355 P1 fade · stop 26410', 0, 1],
+    [26360, 26380, 'long', .18, '', .62, .38],
+    [26200, 26210, 'short', .3, 'B ▼ 26214 break · stop 26260', 0, 1],
+    [26140, 26155, 'long', .26, 'B ▲ 26145 failed break · stop 26095', 0, 1],
+    [25930, 25950, 'long', .18, 'C ▲ 25940 P2 flush · stop 25885', 0, 1]
+  ];
+  setups.forEach(([lo, hi, dir, op, label, off, frac]) => {
+    const c = dir === 'long' ? 'var(--long)' : 'var(--short)';
+    el('rect', { x: SET_X + SET_W * off, y: y(hi), width: SET_W * frac, height: y(lo) - y(hi), rx: 2, style: `fill: ${c}; fill-opacity: ${op}; stroke: ${c}; stroke-width: 1` });
+    if (label) el('text', { x: SET_X + 6, y: y((lo + hi) / 2) + 3.5, style: `fill: ${c}; font: 600 10.5px var(--body)` }, label);
+  });
+  el('text', { x: SET_X + 6, y: y(26380) - 5, style: 'fill: var(--long); font: 600 10px var(--body)' }, 'B ▲ 26360–26380 only after 26405 off rule');
+
+  function special(p, color, dash, pill, width) {
+    el('line', { x1: AX, x2: LINE_END, y1: y(p), y2: y(p), style: `stroke: ${color}; stroke-width: ${width}` + (dash ? '; stroke-dasharray: 6 4' : '') });
+    el('rect', { x: 2, y: y(p) - 8, width: 74, height: 16, rx: 3, style: `fill: ${color}` });
+    el('text', { x: 39, y: y(p) + 3.5, 'text-anchor': 'middle', style: 'fill: var(--pill-ink); font: 600 9.5px var(--mono); letter-spacing: .03em' }, pill);
+  }
+  special(26405, 'var(--pivot)', true, 'INVAL 26405', 2);
+  special(26292, 'var(--pivot)', true, 'CHANGE 26292', 1.5);
+  special(26355, 'var(--pivot)', false, 'PIVOT 26355', 2);
+
+  const LP = 26297.75;
+  el('line', { x1: AX, x2: LINE_END, y1: y(LP), y2: y(LP), style: 'stroke: var(--info); stroke-width: 1.2; stroke-dasharray: 1 3' });
+  el('rect', { x: WALL_X + 2, y: y(LP) - 8, width: 92, height: 16, rx: 3, style: 'fill: var(--info)' });
+  el('text', { x: WALL_X + 48, y: y(LP) + 3.5, 'text-anchor': 'middle', style: 'fill: var(--pill-ink); font: 600 9.5px var(--mono)' }, 'LAST 26297¾');
+  el('path', { d: `M ${AX - 1} ${y(LP) - 5} L ${AX + 7} ${y(LP)} L ${AX - 1} ${y(LP) + 5} Z`, style: 'fill: var(--info)' });
+
+  const shade = el('rect', { x: AX + 1, y: y(26292), width: 4, height: y(LO) - y(26292), style: 'fill: var(--short); opacity: .55' });
+  el('rect', { x: AX + 1, y: y(26355), width: 4, height: y(26292) - y(26355), style: 'fill: var(--short); opacity: .25' });
+  el('rect', { x: AX + 1, y: y(26405), width: 4, height: y(26355) - y(26405), style: 'fill: var(--pivot); opacity: .45' });
+  el('rect', { x: AX + 1, y: TOP - 10, width: 4, height: y(26405) - TOP + 10, style: 'fill: var(--long); opacity: .45' });
+  svg.insertBefore(shade, svg.children[1]);
+})();
+</script>
