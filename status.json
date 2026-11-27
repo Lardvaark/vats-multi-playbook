@@ -26,5 +26,12 @@
   "pivot": "50450",
   "updated": "Thu Nov 26 19:59 ET",
   "top": "long 49990-50020"
+ },
+ "QQQ": {
+  "date": "2026-11-27",
+  "bias": "1",
+  "pivot": "634.88",
+  "updated": "Thu Nov 26 20:05 ET",
+  "top": "long 640.40-640.90"
  }
 }
